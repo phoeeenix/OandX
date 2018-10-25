@@ -9,7 +9,7 @@ public class Main {
         String name;
         int columnNumber = 0;
         int rawNumber = 0;
-        char[][] gameTable = { {' ' , ' ' , ' '} , {' ' , ' ' , ' '} , {' ' , ' ' , ' '} };
+        char[][] gameTable = {{' ', ' ', ' '}, {' ', ' ', ' '}, {' ', ' ', ' '}};
 
 
         Scanner scanner = new Scanner(System.in);
@@ -22,7 +22,7 @@ public class Main {
         name = scanner.next();
         Player player2 = new Player(name, 'X');
         System.out.println("OK");
-        for (int i = 0; i < 5 ; i++) {
+        for (int i = 0; i < 5; i++) {
             player1.putSignQuestions();     // jak to uogólnić player[wybór nr gracza?].putQuestions()
             gameTable[columnNumber][rawNumber] = player1.symbol;
             System.out.println(gameTable.toString());  // jak wyświetlić macierz, poprzez formatter, czy można łatwiej?
@@ -35,22 +35,12 @@ public class Main {
         player1.putSignQuestions();
         gameTable[columnNumber][rawNumber] = player1.symbol;
         System.out.println(gameTable.toString());
+        checkLastMove();
+        System.out.println("THIS IS THE END OF THE GAME. THANK YOU");
 
-        public void checkPlayer1(){
+        public boolean checkPlayer1() {
             char s = player1.symbol;
-            if (gameTable[0][0] == s && gameTable[1][0] = s && gameTable[2][0] == s ||
-                gameTable[0][1] == s && gameTable[1][1] = s && gameTable[2][1] == s ||
-                gameTable[0][2] == s && gameTable[1][2] = s && gameTable[2][2] == s ||
-                gameTable[0][0] == s && gameTable[0][1] = s && gameTable[0][2] == s ||
-                gameTable[1][0] == s && gameTable[1][1] = s && gameTable[1][2] == s ||
-                gameTable[2][0] == s && gameTable[2][1] = s && gameTable[2][2] == s ||
-                gameTable[0][0] == s && gameTable[1][1] = s && gameTable[2][2] == s ||
-                gameTable[0][2] == s && gameTable[1][1] = s && gameTable[2][0] == s)
-                System.out.println("Player 1 " + player1.name + "is a WINNER");
-        }
-
-        public void checkPlayer2(){
-            char s = player2.symbol;
+            boolean player1Winner = false;
             if (gameTable[0][0] == s && gameTable[1][0] = s && gameTable[2][0] == s ||
                     gameTable[0][1] == s && gameTable[1][1] = s && gameTable[2][1] == s ||
                     gameTable[0][2] == s && gameTable[1][2] = s && gameTable[2][2] == s ||
@@ -58,11 +48,37 @@ public class Main {
                     gameTable[1][0] == s && gameTable[1][1] = s && gameTable[1][2] == s ||
                     gameTable[2][0] == s && gameTable[2][1] = s && gameTable[2][2] == s ||
                     gameTable[0][0] == s && gameTable[1][1] = s && gameTable[2][2] == s ||
-                    gameTable[0][2] == s && gameTable[1][1] = s && gameTable[2][0] == s)
-                System.out.println("Player 2 " + player2.name + "is a WINNER");
+                    gameTable[0][2] == s && gameTable[1][1] = s && gameTable[2][0] == s) {
+                System.out.println("Player 1 " + player1.name + "is a WINNER");
+                return player1Winner = true;
+            }
         }
 
-        public void movePlayer1() {     // jak umieścić to w klasie player i odwołać się do tablicy gameTable (modyfikatory?_)
+        public void checkPlayer2() {
+            char s = player2.symbol;
+            boolean player2Winner = false;
+            if (gameTable[0][0] == s && gameTable[1][0] = s && gameTable[2][0] == s ||
+                    gameTable[0][1] == s && gameTable[1][1] = s && gameTable[2][1] == s ||
+                    gameTable[0][2] == s && gameTable[1][2] = s && gameTable[2][2] == s ||
+                    gameTable[0][0] == s && gameTable[0][1] = s && gameTable[0][2] == s ||
+                    gameTable[1][0] == s && gameTable[1][1] = s && gameTable[1][2] == s ||
+                    gameTable[2][0] == s && gameTable[2][1] = s && gameTable[2][2] == s ||
+                    gameTable[0][0] == s && gameTable[1][1] = s && gameTable[2][2] == s ||
+                    gameTable[0][2] == s && gameTable[1][1] = s && gameTable[2][0] == s) {
+                System.out.println("Player 2 " + player2.name + "is a WINNER");
+                return player2Winner = true;
+            }
+        }
+
+        public void checkLastMove(){
+            checkPlayer1();
+            if ( checkPlayer1() == false )
+                System.out.println("It is a draw. Nobody wins");
+        }
+
+
+        public void movePlayer1()
+        {     // jak umieścić to w klasie player i odwołać się do tablicy gameTable (modyfikatory?_)
             player1.putSignQuestions();     // jak to uogólnić player[wybór nr gracza?].putQuestions()
             gameTable[columnNumber][rawNumber] = player1.symbol;
             System.out.println(gameTable.toString());
@@ -75,8 +91,8 @@ public class Main {
             System.out.println(gameTable.toString());
             checkPlayer2();
         }
-
     }
+}
       /*  public putSignInTable(){
         gameTable[]
         }*/
@@ -114,7 +130,7 @@ public class Main {
             System.out.println(gameTable);
             return gameTable;
         }*/
-    }
+
 /*
 public class Player {
 
