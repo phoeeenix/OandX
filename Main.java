@@ -1,20 +1,42 @@
+
+// wypisywać tabela 3 wierszowa, sproboj ponownie pole zajęyete, sprawdzenie kto wygrał (petla w petli?)
+// z menu na poczatku, gra z uzytkownikiem czy z komputerem (logika komputera poprzez Random, jezeli sa gdzie 2x to wstaw tam kółlko
+// blokowanie gracza. KOD MA SIĘ KOMPILOWAĆ NONSTOP!
+
 package OandX;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
 
+    static Scanner scanner = new Scanner(System.in);
+    static char[][] gameTable = {
+            {'x', ' ', ' '},
+            {' ', 'x', ' '},
+            {' ', ' ', 'x'}
+    };
+    static boolean playerWinner;
+    static int columnNumber;
+    static int rawNumber;
+    static boolean freeFieldVar;
+
     public static void main(String[] args) {
 
         String name;
+/*
         int columnNumber = 0;
         int rawNumber = 0;
-        char[][] gameTable = {{' ', ' ', ' '}, {' ', ' ', ' '}, {' ', ' ', ' '}};
+*/
 
+        // System.out.println(Arrays.deepToString(gameTable)); // hashcode - id obiektu, deepToString przy tablicy 2-wym
+        // Arrays.toString przy tablicy 1-wym.
 
-        Scanner scanner = new Scanner(System.in);
+        //  wypisanie w postaci macierzy: pętla - 3 wierszza do wypisania iterować po tablicy typu 1-wymiarową,
+        // wypisać jako wiersz || petla 1-9, sprawdzi poprzez modulo == 0 -> wypisz nowa linie
 
-        //System.out.println(gameTable); // hashcode?
+        printTable();
         System.out.println("Give a name for Player 1");
         name = scanner.next();
         Player player1 = new Player(name, 'O');
@@ -23,38 +45,113 @@ public class Main {
         Player player2 = new Player(name, 'X');
         System.out.println("OK");
         for (int i = 0; i < 5; i++) {
-            player1.putSignQuestions();     // jak to uogólnić player[wybór nr gracza?].putQuestions()
-            gameTable[columnNumber][rawNumber] = player1.symbol;
-            System.out.println(gameTable.toString());  // jak wyświetlić macierz, poprzez formatter, czy można łatwiej?
-            checkPlayer1();
-            player2.putSignQuestions();
-            gameTable[columnNumber][rawNumber] = player2.symbol;
-            System.out.println(gameTable.toString());
-            checkPlayer2();
+            putSignQuestions(player1);     //V jak to uogólnić player[wybór nr gracza?].putQuestions() - metoda(Player player)
+            checkWin(player1);             // TRZEBA ZROBIĆ INSTRUKCJĘ BREAK PRZY WYGRANEJ!
+            putSignQuestions(player2);
+            checkWin(player2);
         }
-        player1.putSignQuestions();
-        gameTable[columnNumber][rawNumber] = player1.symbol;
-        System.out.println(gameTable.toString());
-        checkLastMove();
-        System.out.println("THIS IS THE END OF THE GAME. THANK YOU");
+        putSignQuestions(player1);
+        checkLastMove(player1);
+        System.out.println("/nTHIS IS THE END OF THE GAME. THANK YOU");
+    }
 
-        public boolean checkPlayer1() {
-            char s = player1.symbol;
-            boolean player1Winner = false;
-            if (gameTable[0][0] == s && gameTable[1][0] = s && gameTable[2][0] == s ||
-                    gameTable[0][1] == s && gameTable[1][1] = s && gameTable[2][1] == s ||
-                    gameTable[0][2] == s && gameTable[1][2] = s && gameTable[2][2] == s ||
-                    gameTable[0][0] == s && gameTable[0][1] = s && gameTable[0][2] == s ||
-                    gameTable[1][0] == s && gameTable[1][1] = s && gameTable[1][2] == s ||
-                    gameTable[2][0] == s && gameTable[2][1] = s && gameTable[2][2] == s ||
-                    gameTable[0][0] == s && gameTable[1][1] = s && gameTable[2][2] == s ||
-                    gameTable[0][2] == s && gameTable[1][1] = s && gameTable[2][0] == s) {
-                System.out.println("Player 1 " + player1.name + "is a WINNER");
-                return player1Winner = true;
+    static public void printTable(){
+        for (int i = 0; i < 3; i++) {
+            System.out.println(gameTable[i][0] + " " + gameTable[i][1] + " " + gameTable[i][2]);
+        }
+    }
+
+    static public void enterCoordinates(Player player){  // TRZEBA ZROBIĆ OBSŁUGĘ WYJĄTKÓW - ARRAYINDEXOUTOFBOUND
+        System.out.println(player.getName() + " Give a column number where you want to put a sign");
+        //int
+        columnNumber = scanner.nextInt();
+        System.out.println(player.getName() + " Give a raw number where you want to put a sign");
+        //int
+        rawNumber = scanner.nextInt();
+    }
+
+    static public void markField(Player player){
+        gameTable[columnNumber][rawNumber] = player.getSymbol();
+    }
+
+// CZY METODA STATYCZNA (CZYLI NIE POTRZEBUJĄCA KONSTRUKTORA DO WYWOŁANIA, TAK?) MOŻE BYĆ PRIVATE, DEFAULT?
+    static public void putSignQuestions(Player player) { // bo Main jest metodą statyczną!
+        freeFieldVar = false;
+        while (freeFieldVar == false) {
+            enterCoordinates(player);
+            checkFreeField();
+        }
+        markField(player);
+        //System.out.println(Arrays.deepToString(gameTable));
+        printTable();
+    }
+
+    static public boolean checkFreeField(){
+        if (gameTable[columnNumber][rawNumber] == 'O' || gameTable[columnNumber][rawNumber] == 'X' ) {
+            System.out.println("This field is taken! Please fill an empty field.");
+            freeFieldVar = false;
+        }
+        else
+            freeFieldVar = true;
+        return freeFieldVar;
+    }
+
+    static public boolean checkWin(Player player) {  // jak to sprawdzić inaczej? pętla w pętli?
+        // ponieważ teraz kod nie jest rozszerzalny, co w przypadku tablicy 100x100 itp. ?
+            char s = player.getSymbol();
+            boolean playerWinner = false;
+            if (
+
+                gameTable[0][0] == s && gameTable[1][0] == s && gameTable[2][0] == s ||
+                gameTable[0][1] == s && gameTable[1][1] == s && gameTable[2][1] == s ||
+                gameTable[0][2] == s && gameTable[1][2] == s && gameTable[2][2] == s ||
+                gameTable[0][0] == s && gameTable[0][1] == s && gameTable[0][2] == s ||
+                gameTable[1][0] == s && gameTable[1][1] == s && gameTable[1][2] == s ||
+                gameTable[2][0] == s && gameTable[2][1] == s && gameTable[2][2] == s ||
+                gameTable[0][0] == s && gameTable[1][1] == s && gameTable[2][2] == s ||
+                gameTable[0][2] == s && gameTable[1][1] == s && gameTable[2][0] == s
+
+
+                    ) {
+                System.out.println("Player 1 " + player.getName() + "is a WINNER");
+                playerWinner = true;
+            }
+        /*
+        for (int j = 0; j < 3; j++) {
+            int i = 0, j = 0;
+            if (gameTable[j][i] == s && gameTable[j + 1][i] == s && gameTable[j + 2][i] == s ||
+                gameTable[j][i + 1] == s && gameTable[j + 1][i + 1] == s && gameTable[j + 2][i + 1] == s ||
+                gameTable[j][i + 2] == s && gameTable[j + 1][i + 2] == s && gameTable[j + 1][i + 2] == s ||) {
+                System.out.println("CONGRATULATIONS! /nPlayer " + player.getName() + " is a WINNER");
+                playerWinner = true;
             }
         }
+*/
+         /*  for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3 ; j++) {
+                if (gameTable[i][j] == s) {
+                    System.out.println("CONGRATULATIONS! /nPlayer " + player.getName() + " is a WINNER");
+                    playerWinner = true;
+                }
+                else if(gameTable[j][i] == s) {
+                    System.out.println("CONGRATULATIONS! /nPlayer " + player.getName() + " is a WINNER");
+                    playerWinner = true;
+                }
+            }
+        }
+        for (int i = 0; i < 3; i++) {
+            if (gameTable[i][i] == s && gameTable[i ][] == s && gameTable[][] == s ||
+                    gameTable[][] == s && gameTable[][] == s && gameTable[][] == s) {
+                System.out.println("CONGRATULATIONS! /nPlayer " + player.getName() + " is a WINNER");
+                playerWinner = true;
+            }
+        }*/
 
-        public void checkPlayer2() {
+            System.out.println();
+            return playerWinner;
+        }
+
+       /* public void checkPlayer2() {
             char s = player2.symbol;
             boolean player2Winner = false;
             if (gameTable[0][0] == s && gameTable[1][0] = s && gameTable[2][0] == s ||
@@ -69,51 +166,28 @@ public class Main {
                 return player2Winner = true;
             }
         }
-
-        public void checkLastMove(){
-            checkPlayer1();
-            if ( checkPlayer1() == false )
+*/
+       static public void checkLastMove(Player player){
+            checkWin(player);
+            if ( playerWinner == false )
                 System.out.println("It is a draw. Nobody wins");
         }
 
-
-        public void movePlayer1()
-        {     // jak umieścić to w klasie player i odwołać się do tablicy gameTable (modyfikatory?_)
-            player1.putSignQuestions();     // jak to uogólnić player[wybór nr gracza?].putQuestions()
-            gameTable[columnNumber][rawNumber] = player1.symbol;
-            System.out.println(gameTable.toString());
-            checkPlayer1();
-        }
-
-        public void movePlayer2() {
-            player2.putSignQuestions();
-            gameTable[columnNumber][rawNumber] = player2.symbol;
-            System.out.println(gameTable.toString());
-            checkPlayer2();
-        }
+    public void movePlayer1() {     // jak umieścić to w klasie player i odwołać się do tablicy gameTable (modyfikatory?_)
+        //player1.putSignQuestions();     // jak to uogólnić player[wybór nr gracza?].putQuestions()
+        //gameTable[columnNumber][rawNumber] = player1.symbol;
+        //System.out.println(gameTable.toString());
+        //checkPlayer1();
     }
-}
-      /*  public putSignInTable(){
-        gameTable[]
-        }*/
 
-        /*public putSign(){
-        System.out.println("Give a column number where you want to put a sign");
-        columnNumber = scanner.nextInt();
-        System.out.println("Give a raw number where you want to put a sign");
-        rawNumber = scanner.nextInt();
-        gameTable[columnNumber][rawNumber] = 's'; // how to put a symbol?
-        System.out.println();
-        }*/
+    public void movePlayer2() {
+        //player2.putSignQuestions();
+        //gameTable[columnNumber][rawNumber] = player2.symbol;
+        //System.out.println(gameTable.toString());
+        //checkPlayer2();
+    }
 
-        /*private void changeTable() {
-            gameTable[columnNumber][rawNumber] = 's'; // how to put a parameter symbol?
-        }
-
-        public void showTable() {
-            System.out.println(gameTable);
-        }
-
+        /*
         public void play() {
             for (int i = 0; i < 5 ; i++) {
                 player1.putSignqQuestions();
@@ -123,47 +197,25 @@ public class Main {
             }
             player1.putSignqQuestions();
             showTable();
-        }
-
-
-        public char getGameTable() {
-            System.out.println(gameTable);
-            return gameTable;
         }*/
 
-/*
-public class Player {
+    public static class Player { // static - klasa niezależna, non-static potrzebuje parenta, żeby móc ją stworzyć
 
-    int columnNumber;
-    int rawNumber;
-    String name;
-    char symbol;
-    Scanner scanner = new Scanner(System.in);
+        String name;
+        char symbol;
 
-    //char[][] gameTable = {{' ', ' ', ' '}, {' ', ' ', ' '}, {' ', ' ', ' '}};
+        Player(String name, char symbol) {
+            this.name = name;
+            this.symbol = symbol;
+        }
 
-    Player(String name, char symbol) {
-        this.name = name;
-        this.symbol = symbol;
+        public String getName() {
+            return name;
+        }
+
+        public char getSymbol() {
+            return symbol;
+        }
+
     }
-
-    public String getName() {
-        return name;
-    }
-
-    public char getSymbol() {
-        return symbol;
-    }
-
-    *//*
-    Player player1 = new Player("Player 1", 'O');
-    Player player2 = new Player("Player 2", 'X');*//*
-
-    public void putSignQuestions() {
-        System.out.println("Give a column number where you want to put a sign");
-        columnNumber = scanner.nextInt();
-        System.out.println("Give a raw number where you want to put a sign");
-        rawNumber = scanner.nextInt();
-    }
-
-}*/
+}
