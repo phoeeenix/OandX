@@ -78,13 +78,17 @@ public class Main {
             for (int i = 0; i < 5; i++) {
                 if (playerWinner == true)
                     break;
-                putSignQuestions(player1);     //V jak to uogólnić player[wybór nr gracza?].putQuestions() - metoda(Player player)
-                checkWin(player1);
+                else {
+                    putSignQuestions(player1);     //V jak to uogólnić player[wybór nr gracza?].putQuestions() - metoda(Player player)
+                    checkWin(player1);
+                }
                 if (playerWinner == true)
                     break;
-                blockPlayer(player1, chosenPlayer);
-                printTable();
-                checkWin(chosenPlayer);
+                else {
+                    blockPlayer(player1, chosenPlayer);
+                    printTable();
+                    checkWin(chosenPlayer);
+                 }
                 //if (playerWinner == true)
                 //    break;
             }
@@ -106,34 +110,38 @@ public class Main {
                 //   break;
             }
         }
+        if (playerWinner == true)
+            System.out.println();
+        else {
             putSignQuestions(player1);
             checkLastMove(player1);
-        System.out.println("\nTHIS IS THE END OF THE GAME. THANK YOU");
+        }
+            System.out.println("\nTHIS IS THE END OF THE GAME. THANK YOU");
     }
 
     static public void printTable(){
-        System.out.println("\nTABLE DESING:\n");
+        System.out.println("\nTABLE DESING:\n------");
         for (int i = 0; i < 3; i++) {
             System.out.println(gameTable[i][0] + " " + gameTable[i][1] + " " + gameTable[i][2]);
         }
-        System.out.println();
+        System.out.println("------");
     }
 
     static public void enterCoordinates(Player player){  // TRZEBA ZROBIĆ OBSŁUGĘ WYJĄTKÓW - ARRAYINDEXOUTOFBOUND
-        System.out.println("\n" + player.getName() + ", Give a column number where you want to put a sign");
-        //int
-        columnNumber = scanner.nextInt();
         System.out.println("\n" + player.getName() + ", Give a raw number where you want to put a sign");
         //int
         rawNumber = scanner.nextInt();
+        System.out.println("\n" + player.getName() + ", Give a column number where you want to put a sign");
+        //int
+        columnNumber = scanner.nextInt();
     }
 
     static public void markField(Player player){
-        gameTable[columnNumber][rawNumber] = player.getSymbol();
+        gameTable[rawNumber][columnNumber] = player.getSymbol();
     }
 
-    static public void markComputerField(Player player, int columnNumber, int rawNumber){
-        gameTable[columnNumber][rawNumber] = player.getSymbol();
+    static public void markComputerField(Player player, int rawNumber, int columnNumber){
+        gameTable[rawNumber][columnNumber] = player.getSymbol();
     }
 
     static public void computerMove(Player player){
@@ -145,8 +153,8 @@ public class Main {
 
     static public void generateNumber(){
         Random generator = new Random();
-        columnNumber = generator.nextInt(3);
         rawNumber = generator.nextInt(3);
+        columnNumber = generator.nextInt(3);
     }
 
 // CZY METODA STATYCZNA (CZYLI NIE POTRZEBUJĄCA KONSTRUKTORA DO WYWOŁANIA, TAK?) MOŻE BYĆ PRIVATE, DEFAULT?
@@ -162,7 +170,7 @@ public class Main {
     }
 
     static public boolean checkFreeField(){
-        if (gameTable[columnNumber][rawNumber] != ' ') {
+        if (gameTable[rawNumber][columnNumber] != ' ') {
             System.out.println("This field is taken! Please fill an empty field.");
             freeFieldVar = false;
         }
@@ -255,7 +263,7 @@ public class Main {
 */
        static public void checkLastMove(Player player){
             checkWin(player);
-            if ( playerWinner == false )
+            if (playerWinner == false)
                 System.out.println("\nIt is a draw. Nobody wins");
         }
 
